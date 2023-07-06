@@ -44,6 +44,10 @@ public class stm extends JavaPlugin {
 			if (!savefile.exists())
 				savefile.createNewFile();
 			OutputStream f = new FileOutputStream(savefile);
+
+			f.write("STM".getBytes());
+			f.write(0);
+
 			this._warp.serialize(f);
 			f.close();
 		} catch (IOException err) {
@@ -57,7 +61,16 @@ public class stm extends JavaPlugin {
 			if (!savefile.exists())
 				savefile.createNewFile();
 			InputStream f = new FileInputStream(savefile);
+
+			byte[] sig = f.readNBytes(4);
+			if (sig[0] != (int) 'S' || sig[1] != (int) 'T' || sig[2] != (int) 'M' || sig[3] != 0) {
+				LOGGER.info("STM file had a bad file signature");
+				f.close();
+				return;
+			}
+
 			this._warp.deserialize(f);
+			
 			f.close();
 		} catch (IOException err) {
 			LOGGER.info("Couldn't load STM");

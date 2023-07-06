@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.iscoffeetho.stm;
 
 public class warps {
 	HashMap<String, Location> warplocations;
@@ -131,15 +134,16 @@ public class warps {
 			f.write(warpName.getBytes());
 			f.write(0);
 			UUID world = warpPos.getWorld().getUID();
+
 			long lower = world.getLeastSignificantBits();
 			long higher = world.getMostSignificantBits();
 			for (int j = 0; j < 8; j++) {
-				f.write((int) (lower & 0xFF));
-				lower >>= 8;
+				f.write((int) ((lower >> 7*8) & 0xFF));
+				lower <<= 8;
 			}
 			for (int j = 0; j < 8; j++) {
-				f.write((int) (higher & 0xFF));
-				higher >>= 8;
+				f.write((int) ((higher >> 7*8) & 0xFF));
+				higher <<= 8;
 			}
 			f.write(0);
 
@@ -147,17 +151,15 @@ public class warps {
 			int y = warpPos.getBlockY();
 			int z = warpPos.getBlockZ();
 			for (int j = 0; j < 4; j++) {
-				f.write(x & 0xFF);
-				x >>= 8;
+				f.write((x >> 3*8) & 0xFF);
+				x <<= 8;
 			}
 			for (int j = 0; j < 4; j++) {
-				f.write(z & 0xFF);
-				z >>= 8;
+				f.write((z >> 3*8) & 0xFF);
+				z <<= 8;
 			}
-			for (int j = 0; j < 2; j++) {
-				f.write(y & 0xFF);
-				y >>= 8;
-			}	
+			f.write((y >> 8) & 0xFF);
+			f.write(y & 0xFF);
 			f.write(0);
 		}
 	}
@@ -169,7 +171,7 @@ public class warps {
 			i <<= 8;
 			i |= f.read();
 		}
-		while (i-- > 0) {
+		while (i > 0) {
 			String name = "";
 			while (true) {
 				int c = f.read();
@@ -179,17 +181,22 @@ public class warps {
 			}
 
 			long lower = 0;
-			long higher = 0;
-
 			for (int j = 0; j < 8; j++) {
 				lower <<= 8;
 				lower |= f.read();
 			}
+
+			long higher = 0;
 			for (int j = 0; j < 8; j++) {
 				higher <<= 8;
 				higher |= f.read();
 			}
-			UUID worldUUID = new UUID(lower, higher);
+			UUID worldUUID = new UUID(higher, lower);
+
+			World world = Bukkit.getWorld(worldUUID);
+
+			if (f.read() != 0) // has to be zero from serialize
+				throw new IOException("Illformed savefile");
 
 			int x = 0;
 			int y = 0;
@@ -211,9 +218,11 @@ public class warps {
 			if (f.read() != 0) // has to be zero from serialize
 				throw new IOException("Illformed savefile");
 
-			Location pos = Bukkit.getWorld(worldUUID).getBlockAt(x, y, z).getLocation();
+			Location pos = world.getBlockAt(x, y, z).getLocation();
 
+			stm.LOGGER.info("Loadded Warp " + name);
 			warplocations.put(name, pos);
+			i--;
 		}
 	}
 }
