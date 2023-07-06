@@ -1,0 +1,49 @@
+name: ServeTheMasses
+main: com.github.iscoffeetho.stm
+version: 1.0
+api-version: 1.15
+commands:
+    setwarp:
+        description: Create a named location for /warp
+        usage: /setwarp <name>
+        permission: stm.command.warp.modify
+    delwarp:
+        description: Delete named locations from /warp
+        usage: /delwarp <name>
+        permission: stm.command.warp.modify
+    warp:
+        description: Teleport to a named location
+        usage: /warp <name>
+        permission: stm.command.warp.use
+    home:
+        description: Teleport to your bed
+        usage: /home
+        permission: stm.command.home.use
+    goto:
+        description: Request a teleport to someone
+        usage: /goto <player>
+        permission: stm.command.goto.use
+    acceptgoto:
+        description: Accepts a persons request to teleport to you
+        usage: /acceptgoto <player>
+        permission: stm.command.goto.respond
+    denygoto:
+        description: Denies a persons request to teleport to you
+        usage: /denygoto <player>
+        permission: stm.command.goto.respond
+permissions:
+    stm.command.warp.modify:
+        description: Should user be allowed to modify a warp locations
+        default: op
+    stm.command.warp.use:
+        description: Should user be allowed to warp to any location
+        default: true
+    stm.command.home.use:
+        description: Should user be allowed to teleport to a home location
+        default: true
+    stm.command.goto.use:
+        description: Should user be allowed to request a teleport
+        default: true
+    stm.command.goto.respond:
+        description: Should user be allowed to respond to teleport requests
+        default: true
