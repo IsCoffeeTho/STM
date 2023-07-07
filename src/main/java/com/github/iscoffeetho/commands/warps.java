@@ -124,8 +124,8 @@ public class warps {
 	public void serialize(OutputStream f) throws IOException {
 		int size = warplocations.size();
 		for (int j = 0; j < 4; j++) {
-			f.write(size & 0xFF);
-			size >>= 8;
+			f.write(size >> 3 * 8 & 0xFF);
+			size <<= 8;
 		}
 		Iterator<String> warpEndpoints = warplocations.keySet().iterator();
 		while (warpEndpoints.hasNext()) {
@@ -134,32 +134,46 @@ public class warps {
 			f.write(warpName.getBytes());
 			f.write(0);
 			UUID world = warpPos.getWorld().getUID();
-
 			long lower = world.getLeastSignificantBits();
 			long higher = world.getMostSignificantBits();
 			for (int j = 0; j < 8; j++) {
-				f.write((int) ((lower >> 7*8) & 0xFF));
+				f.write((int) ((lower >> 7 * 8) & 0xFF));
 				lower <<= 8;
 			}
 			for (int j = 0; j < 8; j++) {
-				f.write((int) ((higher >> 7*8) & 0xFF));
+				f.write((int) ((higher >> 7 * 8) & 0xFF));
 				higher <<= 8;
 			}
 			f.write(0);
 
 			int x = warpPos.getBlockX();
-			int y = warpPos.getBlockY();
-			int z = warpPos.getBlockZ();
 			for (int j = 0; j < 4; j++) {
-				f.write((x >> 3*8) & 0xFF);
+				f.write((x >> 3 * 8) & 0xFF);
 				x <<= 8;
 			}
+
+			int z = warpPos.getBlockZ();
 			for (int j = 0; j < 4; j++) {
-				f.write((z >> 3*8) & 0xFF);
+				f.write((z >> 3 * 8) & 0xFF);
 				z <<= 8;
 			}
+
+			int y = warpPos.getBlockY();
 			f.write((y >> 8) & 0xFF);
 			f.write(y & 0xFF);
+			
+			int pitch = Float.floatToIntBits(warpPos.getPitch());
+			for (int j = 0; j < 4; j++) {
+				f.write((pitch >> 3 * 8) & 0xFF);
+				pitch <<= 8;
+			}
+
+			int yaw = Float.floatToIntBits(warpPos.getYaw());
+			for (int j = 0; j < 4; j++) {
+				f.write((yaw >> 3 * 8) & 0xFF);
+				yaw <<= 8;
+			}
+
 			f.write(0);
 		}
 	}
@@ -202,6 +216,9 @@ public class warps {
 			int y = 0;
 			int z = 0;
 
+			int pitch = 0;
+			int yaw = 0;
+
 			for (int j = 0; j < 4; j++) {
 				x <<= 8;
 				x |= f.read();
@@ -215,14 +232,28 @@ public class warps {
 				y |= f.read();
 			}
 
+			for (int j = 0; j < 4; j++) {
+				pitch <<= 8;
+				pitch |= f.read();
+			}
+			for (int j = 0; j < 4; j++) {
+				yaw <<= 8;
+				yaw |= f.read();
+			}
+
 			if (f.read() != 0) // has to be zero from serialize
 				throw new IOException("Illformed savefile");
 
 			Location pos = world.getBlockAt(x, y, z).getLocation();
 
+			pos.setPitch(Float.intBitsToFloat(pitch));
+			pos.setYaw(Float.intBitsToFloat(yaw));
+
 			stm.LOGGER.info("Loadded Warp " + name);
 			warplocations.put(name, pos);
 			i--;
+			stm.LOGGER.info(Integer.toString(i));
 		}
+		stm.LOGGER.info("Loadded all warps");
 	}
 }

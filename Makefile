@@ -5,7 +5,7 @@
 #                                                            |     |       |   #
 #   Makefile                                                 |      \      |   #
 #                                                            |       |     |   #
-#   Last Edited: 07:42AM 06/07/2023                           \      |    /    #
+#   Last Edited: 12:07AM 06/07/2023                           \      |    /    #
 #                                                               \   /   /      #
 #                                                                              #
 # ============================================================================ #
@@ -15,11 +15,7 @@ all:
 	mv target/stm*.jar ..
 
 clean:
-	rm -rf target/classes
-	rm -rf target/maven-archiver
-	rm -rf target/maven-status
-	rm -rf target/surefire-status
-	rm -rf target/test-classes
+	rm -rf target
 
 fclean: clean
 	-rm ../stm*.jar
