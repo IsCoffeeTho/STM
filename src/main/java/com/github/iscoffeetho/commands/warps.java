@@ -42,9 +42,11 @@ public class warps {
 					sender.sendMessage("Must be an operator to run /setwarp");
 					return true;
 				}
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /setwarp");
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					sender.sendMessage("Must be a player to run /setwarp");
 					return true;
 				}
 				warplocations.put(args[0], player.getLocation());
@@ -76,9 +78,11 @@ public class warps {
 			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 				if (args.length != 1)
 					return false;
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /warp");
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					sender.sendMessage("Must be a player to run /warp");
 					return true;
 				}
 				Location pos = warplocations.get(args[0]);
@@ -102,11 +106,6 @@ public class warps {
 				if (!sender.isOp()) {
 					sender.sendMessage("Must be OP to run /delwarp");
 					return false;
-				}
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /delwarp");
-					return true;
 				}
 				Location pos = warplocations.get(args[0]);
 				if (pos == null) {

@@ -1,8 +1,12 @@
 name: ServeTheMasses
 main: com.github.iscoffeetho.stm
-version: 1.0
+version: 1.1
 api-version: 1.15
 commands:
+    heal:
+        description: Sets a players health to max
+        usage: /heal <player>
+        permission: stm.command.heal.use
     setwarp:
         description: Create a named location for /warp
         usage: /setwarp <name>
@@ -32,6 +36,9 @@ commands:
         usage: /denygoto <player>
         permission: stm.command.goto.respond
 permissions:
+    stm.command.heal.use:
+        description: Should user be allowed to heal others
+        default: op
     stm.command.warp.modify:
         description: Should user be allowed to modify a warp locations
         default: op

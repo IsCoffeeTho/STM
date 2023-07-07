@@ -15,19 +15,19 @@ public class stm extends JavaPlugin {
 	public static Logger LOGGER = Logger.getLogger("ServeTheMasses");
 
 	private warps _warp;
-	private homes _home;
 	private gotos _goto;
+	private utilityCommands _util;
 
 	public void onEnable() {
 		this._warp = new warps();
-		this._home = new homes();
 		this._goto = new gotos();
+		this._util = new utilityCommands();
 
 		this.deserialize();
 
 		this._warp.registerCommands(this);
-		this._home.registerCommands(this);
 		this._goto.registerCommands(this);
+		this._util.registerCommands(this);
 
 		LOGGER.info("STM is active");
 	}

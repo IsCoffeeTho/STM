@@ -14,6 +14,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -33,16 +35,20 @@ public class gotos {
 		cmd.setExecutor(new CommandExecutor() {
 			@Override
 			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /goto");
+				if (args.length != 1)
+					return false;
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					sender.sendMessage("Must be a player to run /goto");
 					return true;
 				}
 
 				if (player.getDisplayName().equals(args[0]))
 				{
 					sender.sendMessage("Cannot request to goto yourself");
-					return true;
+					return false;
 				}
 
 				Player reciever = Bukkit.getPlayer(args[0]);
@@ -79,6 +85,7 @@ public class gotos {
 				accept.setHoverEvent(
 						new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 								new ComponentBuilder("Accept " + player.getDisplayName() + "'s request").create()));
+				accept.setColor(ChatColor.GOLD);
 
 				TextComponent sep = new TextComponent(" ");
 
@@ -88,6 +95,7 @@ public class gotos {
 				deny.setHoverEvent(
 						new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 								new ComponentBuilder("Deny " + player.getDisplayName() + "'s request").create()));
+				deny.setColor(ChatColor.RED);
 
 				reciever.spigot().sendMessage(message, accept, sep, deny);
 				return true;
@@ -97,11 +105,13 @@ public class gotos {
 		TabCompleter tabCompleteGoto = new TabCompleter() {
 			@Override
 			public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					return null;
-				}
 				ArrayList<String> complete = new ArrayList<String>();
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					return complete;
+				}
 
 				ArrayList<gotoRequest> reqs = reqLUT.get(player.getUniqueId());
 
@@ -122,9 +132,13 @@ public class gotos {
 		cmd.setExecutor(new CommandExecutor() {
 			@Override
 			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /acceptgoto");
+				if (args.length != 1)
+					return false;
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					sender.sendMessage("Must be a player to run /acceptgoto");
 					return true;
 				}
 
@@ -163,9 +177,13 @@ public class gotos {
 		cmd.setExecutor(new CommandExecutor() {
 			@Override
 			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-				Player player = (Player) sender;
-				if (!player.isOnline()) {
-					sender.sendMessage("Must be a Player to run /denygoto");
+				if (args.length != 1)
+					return false;
+				Player player = null;
+				try {
+					player = (Player) sender;
+				} catch (ClassCastException err) {
+					sender.sendMessage("Must be a player to run /denygoto");
 					return true;
 				}
 
