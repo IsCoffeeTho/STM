@@ -6,8 +6,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.iscoffeetho</groupId>
-	<artifactId>stm</artifactId>
-	<version>1.1</version>
+	<artifactId>STM</artifactId>
+	<version>v1.1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

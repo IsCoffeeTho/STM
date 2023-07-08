@@ -4,6 +4,7 @@
 * Changed from a raw save type to an NBT clone (doesn't support TAG_List (yet))
 * Updated warps to save to new format
 * Updated to `Major.Minor.Patch` versioning starting at v1.1.0
+* Updated compilation target to reflect final jar name `STM-vM.m.p.jar`
 
 ## STM v1.0
 * Added `/home` command
