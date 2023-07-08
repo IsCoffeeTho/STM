@@ -13,4 +13,4 @@
 * Added `/goto` command
 * Added `/acceptgoto` command
 * Added `/denygoto` command
-* Added Save File: `STM.save` 
+* Added Save File: `STM.save`: raw proprietary format
