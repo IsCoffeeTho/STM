@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import com.github.iscoffeetho.commands.*;
+import com.github.iscoffeetho.nbt.*;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class stm extends JavaPlugin {
@@ -30,6 +32,7 @@ public class stm extends JavaPlugin {
 		this._util.registerCommands(this);
 
 		LOGGER.info("STM is active");
+
 	}
 
 	public void onDisable() {
@@ -45,10 +48,10 @@ public class stm extends JavaPlugin {
 				savefile.createNewFile();
 			OutputStream f = new FileOutputStream(savefile);
 
-			f.write("STM".getBytes());
-			f.write(0);
+			compoundTag saveData = new compoundTag("STM");
+			saveData.add(this._warp.toNBT());
 
-			this._warp.serialize(f);
+			saveData.writeTo(f);
 			f.close();
 		} catch (IOException err) {
 			LOGGER.info("Couldn't save STM");
@@ -62,14 +65,11 @@ public class stm extends JavaPlugin {
 				savefile.createNewFile();
 			InputStream f = new FileInputStream(savefile);
 
-			byte[] sig = f.readNBytes(4);
-			if (sig[0] != (int) 'S' || sig[1] != (int) 'T' || sig[2] != (int) 'M' || sig[3] != 0) {
-				LOGGER.info("STM file had a bad file signature");
-				f.close();
-				return;
-			}
+			compoundTag saveData = new compoundTag("");
+			saveData.readFrom(f);
 
-			this._warp.deserialize(f);
+			this._warp.fromNBT(saveData);
+
 			
 			f.close();
 		} catch (IOException err) {

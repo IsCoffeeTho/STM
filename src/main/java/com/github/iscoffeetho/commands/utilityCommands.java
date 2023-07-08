@@ -60,11 +60,13 @@ public class utilityCommands {
 				Player target = null;
 
 				if (args.length > 0) {
-					if (args[0].equals("*"))
-					{
+					if (args[0].equals("*")) {
 						Iterator<? extends Player> players = Bukkit.getServer().getOnlinePlayers().iterator();
-						while (players.hasNext())
-						{
+						if (!players.hasNext()) {
+							sender.sendMessage("Healed no one (There are no players online).");
+							return true;
+						}
+						while (players.hasNext()) {
 							Player p = players.next();
 							p.setSaturation((float) 20.0);
 							p.setExhaustion((float) 0.0);
@@ -78,9 +80,7 @@ public class utilityCommands {
 						sender.sendMessage("That player doesn't exist");
 						return true;
 					}
-				}
-				else
-				{
+				} else {
 					try {
 						target = (Player) sender;
 					} catch (ClassCastException err) {
@@ -102,8 +102,7 @@ public class utilityCommands {
 				List<String> complete = new ArrayList<String>();
 				Iterator<? extends Player> players = Bukkit.getServer().getOnlinePlayers().iterator();
 
-				while (players.hasNext())
-				{
+				while (players.hasNext()) {
 					Player p = players.next();
 					complete.add(p.getDisplayName());
 				}
