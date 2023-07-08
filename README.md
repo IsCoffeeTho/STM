@@ -4,6 +4,7 @@
 
 Serve The Masses (STM) is a *Spigot* multiplayer plugin made as a way to enhance the multiplayer experience.
 
+- Changelog [`view`](./Changelog.md)
 - Commands [`view`](#commands)
 
 ## Commands
